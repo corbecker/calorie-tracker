@@ -29,8 +29,25 @@ const ItemController = (function(){
     getItems: function() {
       return state.items;
     },
-    logData: function(){
-      return state;
+    addItem: function(item) {
+      let id;
+      // Create unique ID's
+      if(state.items.length > 0){
+        id = state.items[state.items.length - 1].id + 1
+      }else{
+        id = 0;
+      }
+
+      const calories = parseInt(item.calories);
+
+      newItem = new Item(id, item.name, item.calories);
+
+      state.items.push(newItem);
+
+      return newItem;
+    },
+    logData: function() {
+      return state
     }
   }
 
@@ -38,6 +55,13 @@ const ItemController = (function(){
 // UI Controller
 
 const UIController = (function(){
+
+  const UISelectors = {
+    itemList: '#item-list',
+    addBtn: '.add-btn',
+    itemNameInput: '#item-name',
+    itemCaloriesInput: '#item-calories',
+  }
 
   // Returning public methods
   return {
@@ -50,15 +74,48 @@ const UIController = (function(){
       </li>`
       });
 
-      document.getElementById('item-list').innerHTML = html;
+      document.querySelector(UISelectors.itemList).innerHTML = html;
 
+    },
+
+    getSelectors: function() {
+      return UISelectors;
+    },
+
+    getItemInput: function() {
+      return {
+        name: document.querySelector(UISelectors.itemNameInput).value,
+        calories: document.querySelector(UISelectors.itemCaloriesInput).value
+      }
     }
+
   }
 })();
 
 // App Controller
 
 const App = (function(ItemController, UIController){
+  // Listeners
+  const loadEventListeners = function() {
+    const UISelectors = UIController.getSelectors();
+
+    // Add item event
+    document.querySelector(UISelectors.addBtn).addEventListener('click', addItemSubmit);
+  }
+
+  // Submit add item
+  const addItemSubmit = function(e) {
+    e.preventDefault();
+
+    // Get input from UIController
+    const input = UIController.getItemInput();
+    console.log(input)
+
+    if(input.name !== '' && input.calories !== ''){
+      const newItem = ItemController.addItem(input);
+    }
+
+  }
 
   // Returning public methods
   return {
@@ -69,8 +126,7 @@ const App = (function(ItemController, UIController){
 
       // Populate the UI with items
       UIController.populateList(items);
-
-      
+      loadEventListeners();
     }
   }
 
