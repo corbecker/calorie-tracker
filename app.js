@@ -15,11 +15,7 @@ const ItemController = (function(){
 
   // Data Structure/State (Private)
   const state = {
-    items: [
-      {id: 0, name: 'Smoothie', calories: 1000},
-      {id: 1, name: 'Rice & Veggies', calories: 500},
-      {id: 2, name: 'Oatmeal', calories: 600},
-    ],
+    items: [],
     currentItem: null,
     totalCalories: 0,
   }
@@ -87,6 +83,26 @@ const UIController = (function(){
         name: document.querySelector(UISelectors.itemNameInput).value,
         calories: document.querySelector(UISelectors.itemCaloriesInput).value
       }
+    },
+
+    addListItem: function(item) {
+      // Create li element
+      const li = document.createElement('li');
+      li.className = 'collection-item';
+      li.id = `item-${item.id}`;
+
+      // Add HTML
+      li.innerHTML = `<strong>${item.name}</strong> <em>${item.calories} Calories</em>
+      <a href="#" class="secondary-content"><i class="material-icons">edit</i></a>`
+
+      // Insert
+      document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
+
+    },
+
+    clearInput: function() {
+      document.querySelector(UISelectors.itemNameInput).value = '';
+      document.querySelector(UISelectors.itemCaloriesInput).value = '';
     }
 
   }
@@ -113,7 +129,10 @@ const App = (function(ItemController, UIController){
 
     if(input.name !== '' && input.calories !== ''){
       const newItem = ItemController.addItem(input);
+      UIController.addListItem(newItem);
     }
+
+    UIController.clearInput();
 
   }
 
@@ -126,6 +145,7 @@ const App = (function(ItemController, UIController){
 
       // Populate the UI with items
       UIController.populateList(items);
+
       loadEventListeners();
     }
   }
