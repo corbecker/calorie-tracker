@@ -1,0 +1,23 @@
+.hero{
+  height: 300px;
+  overflow: hidden;
+}
+
+.hero img {
+  max-width: 100%;
+  height: auto;
+}
+
+.overlap{
+  margin-top: -100px;
+}
+
+.title{
+  position: absolute;
+  top: 20px;
+  text-align: center;
+  color: white;
+  background: rgb(0, 0, 0); /* fallback color */
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px; 
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Track Calories</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="hero">
+  <div class="container">
+    <h1 class="title">Food Diary</h1>
+  </div>
+  <img src="img/hero.jpg">
+</div>
+<div class="container overlap">
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title"><i class="material-icons">restaurant</i>  ADD FOOD</span>
+      <form class="col">
+        <div class="row">
+          <div class="input-field col s6">
+            <input type="text" placeholder="Add Item" id="item-name">
+            <label for="item-name">Meal</label>
+          </div>
+          <div class="input-field col s6">
+            <input type="text" placeholder="Add Calories" id="item-calories">
+            <label for="item-calories">Calories</label>
+          </div>
+        </div>
+        <button class="add-btn btn blue darken-3"><i class="fa fa-plus"></i> Add Food</button>
+        <!-- <button class="update-btn btn orange"><i class="material-icons">edit</i> Edit Food</button>
+        <button class="delete-btn btn red"><i class="material-icons">remove_circle</i> Delete Food</button> -->
+        <button class="back-btn btn grey right"><i class="fa fa-chevron-circle-left"></i> Back</button> 
+      </form>
+    </div>
+  </div>
+  <h3 class="center-align">Total Calories: <span class="total-calories">0</span></h3>
+
+  <ul id="item-list" class="collection">
+    <!-- <li class="collection-item" id="item-0"><strong>Chickpea Curry: </strong> <em>800</em>
+      <a href="#" class="secondary-content"><i class="material-icons">edit</i></a>
+    </li>
+    <li class="collection-item" id="item-0"><strong>Lentil Curry: </strong> <em>800</em>
+      <a href="#" class="secondary-content"><i class="material-icons">edit</i></a>
+    </li>
+    <li class="collection-item" id="item-0"><strong>Veggie Lasagna: </strong> <em>800</em>
+      <a href="#" class="secondary-content"><i class="material-icons">edit</i></a>
+    </li> -->
+  </ul>
+</div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
