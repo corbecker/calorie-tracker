@@ -44,6 +44,15 @@ const ItemController = (function(){
     },
     logData: function() {
       return state
+    },
+    getTotalCalories: function() {
+      let cals;
+      if(state.items.length){
+        cals = state.items.map(item => parseInt(item.calories))
+                          .reduce((total, current) => total + current);
+      }
+      state.totalCalories = cals;
+      return state.totalCalories;
     }
   }
 
@@ -103,6 +112,11 @@ const UIController = (function(){
     clearInput: function() {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
+    },
+
+    updateTotalCalories: function(calories) {
+      const totalCals = document.querySelector('.total-calories');
+      totalCals.textContent = calories;
     }
 
   }
@@ -125,12 +139,14 @@ const App = (function(ItemController, UIController){
 
     // Get input from UIController
     const input = UIController.getItemInput();
-    console.log(input)
 
     if(input.name !== '' && input.calories !== ''){
       const newItem = ItemController.addItem(input);
       UIController.addListItem(newItem);
     }
+
+    const cals = ItemController.getTotalCalories();
+    UIController.updateTotalCalories(cals);
 
     UIController.clearInput();
 
@@ -145,6 +161,9 @@ const App = (function(ItemController, UIController){
 
       // Populate the UI with items
       UIController.populateList(items);
+
+      const cals = ItemController.getTotalCalories();
+      UIController.updateTotalCalories(cals);
 
       loadEventListeners();
     }
