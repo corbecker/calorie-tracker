@@ -46,13 +46,15 @@ const ItemController = (function(){
       return state
     },
     getTotalCalories: function() {
-      let cals;
+      let cals = 0;
       if(state.items.length){
         cals = state.items.map(item => parseInt(item.calories))
                           .reduce((total, current) => total + current);
       }
-      state.totalCalories = cals;
-      return state.totalCalories;
+      return state.totalCalories = cals;
+    },
+    setCurrentItem: function(item) {
+      state.currentItem = item;
     }
   }
 
@@ -66,6 +68,9 @@ const UIController = (function(){
     addBtn: '.add-btn',
     itemNameInput: '#item-name',
     itemCaloriesInput: '#item-calories',
+    updateBtn: '.update-btn',
+    deleteBtn: '.delete-btn',
+    backBtn: '.back-btn',
   }
 
   // Returning public methods
@@ -75,7 +80,7 @@ const UIController = (function(){
 
       items.forEach(function(item) {
         html += `<li class="collection-item" id="item-${item.id}"><strong>${item.name}</strong> <em>${item.calories} Calories</em>
-        <a href="#" class="secondary-content"><i class="material-icons">edit</i></a>
+        <a href="#" class="secondary-content"><i class="material-icons edit">edit</i></a>
       </li>`
       });
 
@@ -94,6 +99,25 @@ const UIController = (function(){
       }
     },
 
+    clearEditState: function() {
+      document.querySelector(UISelectors.updateBtn).style.display = 'none';
+      document.querySelector(UISelectors.deleteBtn).style.display = 'none';
+      document.querySelector(UISelectors.backBtn).style.display = 'none';
+      document.querySelector(UISelectors.addBtn).style.display = 'inline';
+    },
+
+    showEditState: function() {
+      document.querySelector(UISelectors.updateBtn).style.display = 'inline';
+      document.querySelector(UISelectors.deleteBtn).style.display = 'inline';
+      document.querySelector(UISelectors.backBtn).style.display = 'inline';
+      document.querySelector(UISelectors.addBtn).style.display = 'inline';
+    },
+
+    editListItemInput: function(item) {
+      document.querySelector(UISelectors.itemNameInput).value = item.name;
+      document.querySelector(UISelectors.itemCaloriesInput).value = item.calories;
+    },
+
     addListItem: function(item) {
       // Create li element
       const li = document.createElement('li');
@@ -102,7 +126,7 @@ const UIController = (function(){
 
       // Add HTML
       li.innerHTML = `<strong>${item.name}</strong> <em>${item.calories} Calories</em>
-      <a href="#" class="secondary-content"><i class="material-icons">edit</i></a>`
+      <a href="#" class="secondary-content"><i class="material-icons edit">edit</i></a>`
 
       // Insert
       document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
@@ -131,6 +155,21 @@ const App = (function(ItemController, UIController){
 
     // Add item event
     document.querySelector(UISelectors.addBtn).addEventListener('click', addItemSubmit);
+
+    //Edit icon click
+    document.querySelector(UISelectors.itemList).addEventListener('click', itemUpdateSubmit);
+
+    // Back button click Listener
+    document.querySelector(UISelectors.backBtn).addEventListener('click', closeEditState);
+  }
+
+  // Back button click Handler
+  const closeEditState = function(e) {
+    e.preventDefault();
+
+    UIController.clearInput();
+    UIController.clearEditState();
+
   }
 
   // Submit add item
@@ -152,9 +191,35 @@ const App = (function(ItemController, UIController){
 
   }
 
+  //Update Item Submit
+  const itemUpdateSubmit = function(e) {
+
+    UIController.showEditState();
+
+    if(e.target.classList.contains('edit')){
+      // Get list item id
+      let id = e.target.parentElement.parentElement.id;
+      id = id.split('-');
+
+      // Put List item into input
+      const items = ItemController.getItems();    
+      
+      const currentItem = items[id[1]];
+      UIController.editListItemInput(currentItem);
+
+      // Set current Item
+      ItemController.setCurrentItem(currentItem);
+      
+    }
+    
+    e.preventDefault();
+  }
+
   // Returning public methods
   return {
     init: function() {
+
+      UIController.clearEditState();
 
       // Get items from state
       const items = ItemController.getItems();
@@ -162,8 +227,10 @@ const App = (function(ItemController, UIController){
       // Populate the UI with items
       UIController.populateList(items);
 
+      // Populate total calories on init
       const cals = ItemController.getTotalCalories();
       UIController.updateTotalCalories(cals);
+
 
       loadEventListeners();
     }
