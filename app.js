@@ -1,6 +1,19 @@
 // Using module pattern to create a small calorie tracker app.
 
 // Storage Controller
+const StorageController = (function() {
+  
+  // Set Local Storage
+  return {
+    setLocalStorage: function(state) {
+      localStorage.setItem('food', JSON.stringify(state));
+    },
+    getLocalStorage: function() {
+      return JSON.parse(localStorage.getItem('food'));
+    }
+  }
+
+})();
 
 // Item Controller
 const ItemController = (function(){
@@ -21,8 +34,16 @@ const ItemController = (function(){
 
   // Returning public methods
   return {
+    getState: function() {
+      return state;
+    },
     getItems: function() {
       return state.items;
+    },
+    setState: function(store) {
+      state.items = store.items;
+      state.currentItem = store.currentItem;
+      state.totalCalories = store.totalCalories;
     },
     addItem: function(item) {
       let id;
@@ -183,7 +204,7 @@ const UIController = (function(){
 
 // App Controller
 
-const App = (function(ItemController, UIController){
+const App = (function(ItemController, UIController, StorageController){
   // Listeners
   const loadEventListeners = function() {
     const UISelectors = UIController.getSelectors();
@@ -238,6 +259,8 @@ const App = (function(ItemController, UIController){
 
     UIController.clearInput();
 
+    StorageController.setLocalStorage(ItemController.getState());
+
   }
 
   //Item edit click
@@ -274,6 +297,8 @@ const App = (function(ItemController, UIController){
     UIController.updateTotalCalories(cals);
     UIController.clearInput();
     UIController.clearEditState();
+
+    StorageController.setLocalStorage(ItemController.getState());
     
     e.preventDefault();
   };
@@ -288,9 +313,11 @@ const App = (function(ItemController, UIController){
     UIController.clearEditState();
     
     ItemController.deleteItem();
-    
+
     const cals = ItemController.getTotalCalories();
     UIController.updateTotalCalories(cals);
+
+    StorageController.setLocalStorage(ItemController.getState());
   }
 
   // Returning public methods
@@ -298,6 +325,11 @@ const App = (function(ItemController, UIController){
     init: function() {
 
       UIController.clearEditState();
+
+      // Pull items from local storage
+      const store = StorageController.getLocalStorage();
+      ItemController.setState(store);
+      UIController.populateList(store.items);
 
       // Get items from state
       const items = ItemController.getItems();
@@ -314,7 +346,7 @@ const App = (function(ItemController, UIController){
     }
   }
 
-})(ItemController, UIController);
+})(ItemController, UIController, StorageController);
 
 // Initialize the app
 App.init();
