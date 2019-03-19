@@ -9,6 +9,9 @@ const StorageController = (function() {
       localStorage.setItem('food', JSON.stringify(state));
     },
     getLocalStorage: function() {
+      if(localStorage.getItem('food') === null){
+        
+      }
       return JSON.parse(localStorage.getItem('food'));
     }
   }
@@ -38,12 +41,16 @@ const ItemController = (function(){
       return state;
     },
     getItems: function() {
-      return state.items;
+      if(state){
+        return state.items;
+      }
     },
     setState: function(store) {
-      state.items = store.items;
-      state.currentItem = store.currentItem;
-      state.totalCalories = store.totalCalories;
+      if(store){
+        state.items = store.items;
+        state.currentItem = store.currentItem;
+        state.totalCalories = store.totalCalories;
+      }
     },
     addItem: function(item) {
       let id;
@@ -328,8 +335,10 @@ const App = (function(ItemController, UIController, StorageController){
 
       // Pull items from local storage
       const store = StorageController.getLocalStorage();
-      ItemController.setState(store);
-      UIController.populateList(store.items);
+      if(store){
+        ItemController.setState(store);
+        UIController.populateList(store.items);
+      }
 
       // Get items from state
       const items = ItemController.getItems();
